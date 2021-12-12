@@ -1,0 +1,17 @@
+### 获取token的方法
+POST http://127.0.0.1:7000/ecommerce-authority-center/authority/token
+Content-Type: application/json
+
+{
+  "username": "imoocguankang@163.com",
+  "password": "25d55ad283aa400af464c76d713c07ad"
+}
+
+### 注册功能实现
+POST http://127.0.0.1:7000/ecommerce-authority-center/authority/register
+Content-Type: application/json
+
+{
+  "username": "moocguankang@163.com",
+  "password": "25d55ad283aa400af464c76d713c07ad"
+}
