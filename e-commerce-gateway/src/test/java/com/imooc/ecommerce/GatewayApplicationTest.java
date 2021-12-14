@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @Package com.imooc.ecommerce
  * @date 2021/12/6 16:57
  */
-@SpringBootTest
+@SpringBootTest(classes = GatewayApplication.class)
 @RunWith(SpringRunner.class)
 public class GatewayApplicationTest {
 

@@ -1,11 +1,14 @@
 package com.imooc.ecommerce.config;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
 import javax.annotation.PostConstruct;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.nacos.api.exception.NacosException;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
@@ -16,10 +19,11 @@ import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author qingtian
- * @description:通过nacos 下发动态路由配置，监听naocs 中路由配置变更
+ * @description:通过nacos下发动态路由配置，监听naocs中路由配置变更
  * @Package com.imooc.ecommerce.config
  * @date 2021/12/7 16:29
  */
@@ -92,7 +96,7 @@ public class DynamicRouteServiceImplByNacos {
                     dynamicRouteService.updateList(definitionList);
                 }
             });
-        }catch (Exception ex) {
+        }catch (NacosException ex) {
             log.error("dynamic update gateway config error : [{}],",ex.getMessage(),ex);
         }
     }
@@ -103,7 +107,7 @@ public class DynamicRouteServiceImplByNacos {
     @PostConstruct
     public void init() {
 
-        log.info("gateway route inti ...");
+        log.info("gateway route init ...");
 
         try {
             //初始化Nacos配置客户端
@@ -112,8 +116,26 @@ public class DynamicRouteServiceImplByNacos {
                 log.error("init configService fail");
                 return;
             }
-        } catch (Exception ex) {
 
+            //通过Nacos config并指定路由配置去获取路由配置
+            String configInfo = configService.getConfig(
+                    GatewayConfig.NACOS_ROUTER_DATA_ID,
+                    GatewayConfig.NACOS_ROUTER_GROUP,
+                    GatewayConfig.DEFAULT_TIMEOUT
+            );
+
+            log.info("get current gateway config : [{}]",configInfo);
+            List<RouteDefinition> definitionList = JSON.parseArray(configInfo, RouteDefinition.class);
+            if (CollectionUtil.isNotEmpty(definitionList)) {
+                for (RouteDefinition routeDefinition : definitionList) {
+                    log.info("init gateway info : [{}]",routeDefinition.toString());
+                    dynamicRouteService.addRouteDefinition(routeDefinition);
+                }
+            }
+        } catch (Exception ex) {
+            log.info("gateway config init has some error : [{}]",ex.getMessage(),ex);
         }
+        //设置监听器
+        dynamicRouteNacosListener(GatewayConfig.NACOS_ROUTER_DATA_ID,GatewayConfig.NACOS_ROUTER_GROUP);
     }
 }

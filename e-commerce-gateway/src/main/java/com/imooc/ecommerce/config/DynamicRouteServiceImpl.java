@@ -57,7 +57,7 @@ public class DynamicRouteServiceImpl implements ApplicationEventPublisherAware {
      * @param routeDefinition
      * @return
      */
-    private String addRouteDefinition(RouteDefinition routeDefinition) {
+    public String addRouteDefinition(RouteDefinition routeDefinition) {
 
         log.info("gateway add route : [{}]",routeDefinition);
 
