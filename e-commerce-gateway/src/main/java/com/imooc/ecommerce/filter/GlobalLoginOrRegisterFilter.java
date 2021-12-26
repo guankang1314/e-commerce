@@ -2,7 +2,10 @@ package com.imooc.ecommerce.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.imooc.ecommerce.constant.CommonConstant;
+import com.imooc.ecommerce.constant.GatewayConstant;
+import com.imooc.ecommerce.util.TokenParseUtil;
 import com.imooc.ecommerce.vo.JwtToken;
+import com.imooc.ecommerce.vo.LoginUserInfo;
 import com.imooc.ecommerce.vo.UsernameAndPassword;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +18,10 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ServerWebExchange;
@@ -58,8 +63,59 @@ public class GlobalLoginOrRegisterFilter implements GlobalFilter, Ordered {
      */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        // TODO
-        return null;
+
+        ServerHttpRequest request = exchange.getRequest();
+        ServerHttpResponse response = exchange.getResponse();
+
+        //如果是登录
+        if (request.getURI().getPath().contains(GatewayConstant.LOGIN_URI)) {
+            //去授权中心拿token
+            String token = getTokenFromAuthorityCenter(
+                    request,GatewayConstant.AUTHORITY_CENTER_TOKEN_URL_FORMAT
+            );
+            //header 中不能设置null
+            response.getHeaders().add(
+                    CommonConstant.JWT_USER_INFO_KEY,
+                    null == token ? "null" : token
+            );
+            response.setStatusCode(HttpStatus.OK);
+            return response.setComplete();
+        }
+
+        //如果是注册
+        if (request.getURI().getPath().contains(GatewayConstant.REGISTER_URI)) {
+            //去注册中心拿token: 会先创建用户，在返回token
+            String token = getTokenFromAuthorityCenter(
+                    request,GatewayConstant.AUTHORITY_CENTER_REGISTER_URL_FORMAT
+            );
+            //header中不允许为null对象
+            response.getHeaders().add(
+                    CommonConstant.JWT_USER_INFO_KEY,
+                    null == token ? "null" : token
+            );
+            response.setStatusCode(HttpStatus.OK);
+            response.setComplete();
+        }
+
+        //带着token去访问其他的服务，则鉴权
+        HttpHeaders headers = request.getHeaders();
+        String token = headers.getFirst(CommonConstant.JWT_USER_INFO_KEY);
+        LoginUserInfo loginUserInfo = null;
+
+        try {
+            loginUserInfo = TokenParseUtil.parseUserInfoFromToken(token);
+        } catch (Exception ex) {
+            log.error("parse user info from token has error : [{}]",ex.getMessage(),ex);
+        }
+
+        //获取不到用户信息
+        if (null == loginUserInfo) {
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            return response.setComplete();
+        }
+
+        //解析通过放行
+        return chain.filter(exchange);
     }
 
     @Override
@@ -114,7 +170,7 @@ public class GlobalLoginOrRegisterFilter implements GlobalFilter, Ordered {
         UsernameAndPassword requestBody = JSON.parseObject(
                 parseBodyFromRequest(request),UsernameAndPassword.class
         );
-        log.info("login request url and body : [{}]",requestUrl,JSON.toJSONString(requestBody));
+        log.info("login request url and body : [{}],[{}]",requestUrl,JSON.toJSONString(requestBody));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

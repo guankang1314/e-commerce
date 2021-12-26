@@ -25,12 +25,12 @@ public class GatewayConstant {
      * @date 2021/12/14 18:58
      */
     public static final String AUTHORITY_CENTER_TOKEN_URL_FORMAT =
-            "http://%s/%s/ecommerce-authority-center/authority/token";
+            "http://%s:%s/ecommerce-authority-center/authority/token";
 
     /**
      * @description: 去授权中心注册并拿到token的rurl格式化接口
      * @date 2021/12/14 21:57
      */
     public static final String AUTHORITY_CENTER_REGISTER_URL_FORMAT =
-            "http://%s/%s/ecommerce-authority-center/authority/register";
+            "http://%s:%s/ecommerce-authority-center/authority/register";
 }
