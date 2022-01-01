@@ -11,9 +11,9 @@ spring:
       # 服务注册发现
       discovery:
         enabled: true # 如果不想使用 Nacos 进行服务注册和发现, 设置为 false 即可
-        server-addr: 127.0.0.1:8848
         # server-addr: 127.0.0.1:8848,127.0.0.1:8849,127.0.0.1:8850 # Nacos 服务器地址
-        namespace: 45b190bc-cc52-4146-ba32-2fb84e9991c0
+        server-addr: 192.168.0.103:8848
+        namespace: f2dfb4c7-a6cf-45d5-92e2-3912daf808d0
         metadata:
           management:
             context-path: ${server.servlet.context-path}/actuator

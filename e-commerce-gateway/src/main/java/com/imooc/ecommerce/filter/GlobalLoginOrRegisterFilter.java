@@ -120,6 +120,7 @@ public class GlobalLoginOrRegisterFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
+        //因为在之前缓存body数据的过滤器中是 + 1 ，这个过滤器必须在它之后执行，所以这里是 + 2.
         return HIGHEST_PRECEDENCE + 2;
     }
 
