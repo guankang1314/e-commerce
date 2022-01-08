@@ -3,8 +3,11 @@ package com.imooc.ecommerce.util;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.Calendar;
 
+
+import cn.hutool.core.codec.Base64Decoder;
 import com.alibaba.fastjson.JSON;
 import com.imooc.ecommerce.constant.CommonConstant;
 import com.imooc.ecommerce.vo.LoginUserInfo;
@@ -12,7 +15,7 @@ import com.imooc.ecommerce.vo.LoginUserInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import sun.misc.BASE64Decoder;
+
 
 /**
  * @author qingtian
@@ -29,7 +32,7 @@ public class TokenParseUtil {
     private static PublicKey getPublicKey() throws Exception {
 
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(
-                new BASE64Decoder().decodeBuffer(CommonConstant.PUBLIC_KEY)
+                Base64.getDecoder().decode(CommonConstant.PUBLIC_KEY)
         );
         return KeyFactory.getInstance("RSA").generatePublic(keySpec);
     }

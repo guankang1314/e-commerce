@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author qingtian
  * @version 1.0
- * @description: 用户身份同意登录拦截
+ * @description: 用户身份统一登录拦截
  * @date 2021/12/27 20:27
  */
 @Slf4j

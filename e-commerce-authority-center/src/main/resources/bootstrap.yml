@@ -16,6 +16,16 @@ spring:
         metadata:
           management:
             context-path: ${server.servlet.context-path}/actuator
+  kafka:
+    bootstrap-servers: 192.168.0.103:9092
+    producer:
+      retries: 3
+    consumer:
+      auto-offset-reset: latest
+      zipkin:
+        sender:
+          type: kafka # 默认是 web
+        base-url: http://192.168.0.103:9411/
   jpa:
     show-sql: true
     hibernate:
