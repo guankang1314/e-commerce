@@ -3,7 +3,9 @@ package com.imooc.ecommerce.filter;
 import com.imooc.ecommerce.constant.CommonConstant;
 import com.imooc.ecommerce.util.TokenParseUtil;
 import com.imooc.ecommerce.vo.LoginUserInfo;
+import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,6 +26,10 @@ public class LoginUserInfoInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+        //部分请求不需要提供身份信息，白名单
+        if (checkWhiteListUrl(request.getRequestURI())) {
+            return true;
+        }
         //先尝试从http header中拿到token
         String token = request.getHeader(CommonConstant.JWT_USER_INFO_KEY);
 
@@ -55,5 +61,16 @@ public class LoginUserInfoInterceptor implements HandlerInterceptor {
         if (null != AccessContext.getLoginUserInfo()) {
             AccessContext.clearLoginUserInfo();
         }
+    }
+
+    /**
+     * @description: 校验url是否在白名单里，比如说swagger接口
+     * @param: url
+     * @return: boolean
+     * @date: 2022/1/8 18:53
+     */
+    private boolean checkWhiteListUrl(String url) {
+        return StringUtils.containsAny(url,
+                "springfox","swagger","v2","webjars","doc.html");
     }
 }
