@@ -1,6 +1,8 @@
 package com.imooc.ecommerce.entity;
 
+import com.imooc.ecommerce.account.AddressInfo;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -22,6 +24,7 @@ import java.util.Date;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "t_ecommerce_address")
+@Builder
 public class EcommerceAddress {
 
     /**
@@ -82,4 +85,32 @@ public class EcommerceAddress {
     @LastModifiedDate
     @Column(name = "update_time",nullable = false)
     private Date updateTime;
+
+    public static EcommerceAddress to(Long id, AddressInfo.AddressItem addressItem) {
+
+        EcommerceAddress ecommerceAddress = EcommerceAddress.builder()
+                .userId(id)
+                .username(addressItem.getUsername())
+                .phone(addressItem.getPhone())
+                .province(addressItem.getProvince())
+                .city(addressItem.getCity())
+                .addressDetail(addressItem.getAddressDetail())
+                .build();
+        return ecommerceAddress;
+    }
+
+    public AddressInfo.AddressItem toAddressItem() {
+
+        AddressInfo.AddressItem addressItem = AddressInfo.AddressItem.builder()
+                .id(this.id)
+                .username(this.username)
+                .phone(this.phone)
+                .province(this.province)
+                .city(this.city)
+                .addressDetail(this.addressDetail)
+                .createTime(this.createTime)
+                .updateTime(this.updateTime)
+                .build();
+        return addressItem;
+    }
 }
