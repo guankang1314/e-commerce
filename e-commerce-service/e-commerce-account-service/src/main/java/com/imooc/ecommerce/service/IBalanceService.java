@@ -18,9 +18,7 @@ public interface IBalanceService {
     BalanceInfo getCurrentUserBalanceInfo();
 
     /**
-     * @description: 扣减用户余额
-     * @param: balanceInfo 代表想要扣减的余额
-     * @return: com.imooc.ecommerce.account.BalanceInfo
+     *  扣减用户余额
      */
     BalanceInfo deductBalance(BalanceInfo balanceInfo);
 }

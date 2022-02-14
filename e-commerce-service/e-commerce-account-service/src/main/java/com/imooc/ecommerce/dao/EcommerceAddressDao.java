@@ -1,7 +1,6 @@
 package com.imooc.ecommerce.dao;
 
 import com.imooc.ecommerce.entity.EcommerceAddress;
-import jdk.internal.net.http.LineSubscriberAdapter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
