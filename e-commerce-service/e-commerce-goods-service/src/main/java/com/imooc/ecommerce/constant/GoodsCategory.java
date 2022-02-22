@@ -9,35 +9,32 @@ import java.util.stream.Stream;
 /**
  * @author qingtian
  * @version 1.0
- * @description: 品牌分类枚举
- * @date 2022/2/13 21:37
+ * @description: 商品类别
+ * @date 2022/2/16 22:52
  */
 @Getter
 @AllArgsConstructor
-public enum BrandCategory {
+public enum GoodsCategory {
 
-    BRAND_A("20001","品牌 A"),
-    BRAND_B("20002","品牌 B"),
-    BRAND_C("20003","品牌 C"),
-    BRAND_D("20004","品牌 D"),
-    BRAND_E("20005","品牌 E"),
+    DIAN_QI("10001","电器"),
+    JIA_JU("10002","家具"),
+    FU_SHI("10003","服饰"),
+    MY_YIN("10004","母婴"),
+    SHI_PIN("10005","食品"),
+    TU_SHU("10006","图书"),
     ;
     /**
-     * 品牌分类编码
+     * 商品分类编码
      */
     private final String code;
 
     /**
-     * 品牌分类描述
+     * 商品分类描述
      */
     private final String description;
 
-    /**
-     * 根据 code 获取到 BrandCategory
-     * @param code
-     * @return
-     */
-    public static BrandCategory of(String code) {
+    public static GoodsCategory of(String code) {
+
         Objects.requireNonNull(code);
 
         return Stream.of(values())
