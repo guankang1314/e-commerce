@@ -22,10 +22,12 @@ spring:
       retries: 3
     consumer:
       auto-offset-reset: latest
-      zipkin:
-        sender:
-          type: kafka # 默认是 web
-        base-url: http://192.168.0.103:9411/
+  zipkin:
+    sender:
+      type: kafka # 默认是 web
+    base-url: http://192.168.0.103:9411/
+  main:
+    allow-bean-definition-overriding: true  # 因为将来会引入很多依赖, 难免有重名的 bean
   jpa:
     show-sql: true
     hibernate:
