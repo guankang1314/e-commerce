@@ -5,19 +5,21 @@ import com.imooc.ecommerce.constant.GoodsCategory;
 import javax.persistence.AttributeConverter;
 
 /**
- * @author qingtian
- * @version 1.0
- * @description: 商品类别枚举转换器
- * @date 2022/2/16 22:58
- */
-public class GoodsCategoryConverter implements AttributeConverter<GoodsCategory,String> {
+ * <h1>商品类别枚举属性转换器</h1>
+ * */
+public class GoodsCategoryConverter implements AttributeConverter<GoodsCategory, String> {
+
     @Override
     public String convertToDatabaseColumn(GoodsCategory goodsCategory) {
+        if (null == goodsCategory)
+            return null;
         return goodsCategory.getCode();
     }
 
     @Override
-    public GoodsCategory convertToEntityAttribute(String s) {
-        return GoodsCategory.of(s);
+    public GoodsCategory convertToEntityAttribute(String code) {
+        if (null == code)
+            return null;
+        return GoodsCategory.of(code);
     }
 }

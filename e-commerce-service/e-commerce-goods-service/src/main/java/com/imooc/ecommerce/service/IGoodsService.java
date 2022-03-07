@@ -9,39 +9,27 @@ import com.imooc.ecommerce.vo.PageSimpleGoodsInfo;
 import java.util.List;
 
 /**
- * @author qingtian
- * @version 1.0
- * @description: 商品模块接口
- * @date 2022/2/22 23:57
- */
+ * <h1>商品微服务相关服务接口定义</h1>
+ * */
 public interface IGoodsService {
 
     /**
-     * 根据 tableId 查询商品详细信息
-     * @param tableId
-     * @return
-     */
+     * <h2>根据 TableId 查询商品详细信息</h2>
+     * */
     List<GoodsInfo> getGoodsInfoByTableId(TableId tableId);
 
     /**
-     * 获取分页的商品信息
-     * @param page
-     * @return
-     */
+     * <h2>获取分页的商品信息</h2>
+     * */
     PageSimpleGoodsInfo getSimpleGoodsInfoByPage(int page);
 
     /**
-     * 根据 tableId 查询简单商品信息
-     * @param tableId
-     * @return
-     */
+     * <h2>根据 TableId 查询简单商品信息</h2>
+     * */
     List<SimpleGoodsInfo> getSimpleGoodsInfoByTableId(TableId tableId);
 
     /**
-     * 扣减商品库存
-     * @param deductGoodsInventories
-     * @return
-     */
+     * <h2>扣减商品库存</h2>
+     * */
     Boolean deductGoodsInventory(List<DeductGoodsInventory> deductGoodsInventories);
-
 }

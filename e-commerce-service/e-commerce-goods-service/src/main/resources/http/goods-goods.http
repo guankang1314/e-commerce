@@ -1,0 +1,57 @@
+### 根据 TableId 查询详细商品信息
+POST http://127.0.0.1:9001/imooc/ecommerce-goods-service/goods/goods-info
+Content-Type: application/json
+e-commerce_user: eyJhbGciOiJSUzI1NiJ9.eyJlLWNvbW1lcmNlX3VzZXIiOiJ7XCJpZFwiOjEyLFwidXNlcm5hbWVcIjpcImltb29jZ3VhbmthbmdAMTYzLmNvbVwifSIsImp0aSI6ImJiNDRlNGE5LTM4ZDctNDkwZC05MGY4LTExMjlkYWY0YmQ5YyIsImV4cCI6MTY0NjY2ODgwMH0.udwNONE8b77-RaCS_5qrihLP8YYF5n1-ELslU2vVZTT9X34EZOub7nLV9U75KxwmD6LJBp1nd3IypllTqoWVfy9YEOhnkCeG7x8dzEJ2syaY9clUdrXxvokdtQU7YT2YAJ-ZjRuamBzEyhb2X6kPwfkRUcZxb-JrRhtQ-DacNiRL3CTnuslcQ_K7nW3go-1lwlBScRGtxSgP1CAE7678AXnZejZUIUO533CigqHNxmY620lSygR77Xe00eVrR10iPkzo6qfd2tOUnzMH_wUf84yHZQwBHtab_E0CHHnojQjlGMmzBmqF0zEZyOfZ8hsxzaF2GWZ3PfTT00h0fMVDfQ
+
+{
+  "ids": [
+    {
+      "id": 11
+    },
+    {
+      "id": 12
+    }
+  ]
+}
+
+
+### 根据分页查询简单商品信息
+GET http://127.0.0.1:9001/imooc/ecommerce-goods-service/goods/page-simple-goods-info?page=2
+Accept: application/json
+e-commerce_user: eyJhbGciOiJSUzI1NiJ9.eyJlLWNvbW1lcmNlX3VzZXIiOiJ7XCJpZFwiOjEyLFwidXNlcm5hbWVcIjpcImltb29jZ3VhbmthbmdAMTYzLmNvbVwifSIsImp0aSI6IjhiNzMzZGNhLWJkZTMtNGE2OS1iMDYzLWU3Njg1ZTA3YmQ4YyIsImV4cCI6MTY0NjU4MjQwMH0.lzETzLHxZZyHuYZDPwDIw5SGvO607pJgLDUy4Gb5Oua4p9pvuILW7TwFPReISheTEHIDHqPS6I-LqEamAJvcSldqhye3PptcqaPZ1pFBXqPS7T1waKK1ynxQvTuZyAzDGTV2yh1697tpDaaak_eUQGAGTYn2qFLI6dtj2CayrAkkKnhZzFJcZvjyuEfSVrhuYX6w35S2v0SkOxpQO-ojpHh1lvKmjEPIE53j21IBwuwrosy10yRoFsBToBcMy2cUt2HwA4AoaoFUOgcgJz_yl5npVswp5KEhIoSOkSCpoqYqLr-8LY6i_wuCIqu33rxkH6srdleD4PZvc2oanhjupQ
+
+
+### 根据 TableId 查询简单商品信息: 完整的 goods cache
+### 第二步验证, 删掉 cache
+### 第三步验证, 删除 cache 中其中一个商品
+POST http://127.0.0.1:9001/imooc/ecommerce-goods-service/goods/simple-goods-info
+Content-Type: application/json
+e-commerce_user: eyJhbGciOiJSUzI1NiJ9.eyJlLWNvbW1lcmNlX3VzZXIiOiJ7XCJpZFwiOjEyLFwidXNlcm5hbWVcIjpcImltb29jZ3VhbmthbmdAMTYzLmNvbVwifSIsImp0aSI6ImJiNDRlNGE5LTM4ZDctNDkwZC05MGY4LTExMjlkYWY0YmQ5YyIsImV4cCI6MTY0NjY2ODgwMH0.udwNONE8b77-RaCS_5qrihLP8YYF5n1-ELslU2vVZTT9X34EZOub7nLV9U75KxwmD6LJBp1nd3IypllTqoWVfy9YEOhnkCeG7x8dzEJ2syaY9clUdrXxvokdtQU7YT2YAJ-ZjRuamBzEyhb2X6kPwfkRUcZxb-JrRhtQ-DacNiRL3CTnuslcQ_K7nW3go-1lwlBScRGtxSgP1CAE7678AXnZejZUIUO533CigqHNxmY620lSygR77Xe00eVrR10iPkzo6qfd2tOUnzMH_wUf84yHZQwBHtab_E0CHHnojQjlGMmzBmqF0zEZyOfZ8hsxzaF2GWZ3PfTT00h0fMVDfQ
+
+{
+  "ids": [
+    {
+      "id": 11
+    },
+    {
+      "id": 12
+    }
+  ]
+}
+
+
+### 扣减商品库存
+PUT http://127.0.0.1:9001/imooc/ecommerce-goods-service/goods/deduct-goods-inventory
+Content-Type: application/json
+e-commerce-user: eyJhbGciOiJSUzI1NiJ9.eyJlLWNvbW1lcmNlLXVzZXIiOiJ7XCJpZFwiOjEwLFwidXNlcm5hbWVcIjpcIlFpbnlpQGltb29jLmNvbVwifSIsImp0aSI6IjI3NGUzYzQ3LTRmNTQtNDdlYy05MGNhLTcxNzYyMjcyN2EzYyIsImV4cCI6MTYyNDk4MjQwMH0.TUy1C-9FkpyGkTxjyAKP9tX4mFzdZ22RWYvtKOOUUwjFefHSESamFWTJ2l0PcJJp07EIpzKgk9sNnVRZ5NmW6_Beo2AQgPOMWbYHiJg7eiR0bVC2CK6Tw8rUwgpkoWSXePgUM_3kntvXc19mgzO1NLVPNw5gahkBigzDffrXVUuXyc6kAf6L-y37hCytqfUwpgwQYm4Z2G7tUmF0_BsnQR4qHuWHrEdHm3_8Y8V38Ph_1VAlcJGvNXZS3bqtBxWHa2Wf7WksVA-H3dO_7xO7AlGJvUNOyiMGOjvMiwXc5mbqqqe6KXnvr9W1CvAPFmR-nlmc81wiCqW5Yfwo2Rh_5A
+
+[
+  {
+    "goodsId": 1,
+    "count": 100
+  },
+  {
+    "goodsId": 2,
+    "count": 34
+  }
+]

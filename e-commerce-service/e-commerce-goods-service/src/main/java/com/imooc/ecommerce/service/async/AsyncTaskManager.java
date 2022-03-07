@@ -3,73 +3,70 @@ package com.imooc.ecommerce.service.async;
 import com.imooc.ecommerce.constant.AsyncTaskStatusEnum;
 import com.imooc.ecommerce.goods.GoodsInfo;
 import com.imooc.ecommerce.vo.AsyncTaskInfo;
-import jdk.internal.net.http.LineSubscriberAdapter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
- * @author qingtian
- * @version 1.0
- * @description: 异步任务执行管理器，对异步任务进行包装管理，记录并塞入信息
- * @date 2022/3/1 23:50
- */
+ * <h1>异步任务执行管理器</h1>
+ * 对异步任务进行包装管理, 记录并塞入异步任务执行信息
+ * */
 @Slf4j
 @Component
 public class AsyncTaskManager {
 
-    /**
-     * 异步任务执行信息容器
-     */
-    private final Map<String, AsyncTaskInfo> taskContainer = new HashMap<>(16);
+    /** 异步任务执行信息容器 */
+    private final Map<String, AsyncTaskInfo> taskContainer =
+            new HashMap<>(16);
 
-    @Autowired
-    private IAsyncService asyncService;
+    private final IAsyncService asyncService;
+
+    public AsyncTaskManager(IAsyncService asyncService) {
+        this.asyncService = asyncService;
+    }
 
     /**
-     * 初始化异步任务
-     * @return
-     */
+     * <h2>初始化异步任务</h2>
+     * */
     public AsyncTaskInfo initTask() {
 
         AsyncTaskInfo taskInfo = new AsyncTaskInfo();
-        //设置一个唯一的异步任务id
+        // 设置一个唯一的异步任务 id, 只要唯一即可
         taskInfo.setTaskId(UUID.randomUUID().toString());
         taskInfo.setStatus(AsyncTaskStatusEnum.START);
         taskInfo.setStartTime(new Date());
 
-        //初始化的时候就要把异步任务执行信息放入到存储容器中
-        taskContainer.put(taskInfo.getTaskId(),taskInfo);
+        // 初始化的时候就要把异步任务执行信息放入到存储容器中
+        taskContainer.put(taskInfo.getTaskId(), taskInfo);
         return taskInfo;
     }
 
     /**
-     * 提交异步任务
-     * @param goodsInfos
-     * @return
-     */
+     * <h2>提交异步任务</h2>
+     * */
     public AsyncTaskInfo submit(List<GoodsInfo> goodsInfos) {
 
-        //初始化一个异步任务监控信息
+        // 初始化一个异步任务的监控信息
         AsyncTaskInfo taskInfo = initTask();
-        asyncService.asyncImportGoods(goodsInfos,taskInfo.getTaskId());
+        asyncService.asyncImportGoods(goodsInfos, taskInfo.getTaskId());
         return taskInfo;
     }
 
     /**
-     * 设置异步任务的执行信息
-     * @param taskInfo
-     */
+     * <h2>设置异步任务执行状态信息</h2>
+     * */
     public void setTaskInfo(AsyncTaskInfo taskInfo) {
-        taskContainer.put(taskInfo.getTaskId(),taskInfo);
+        taskContainer.put(taskInfo.getTaskId(), taskInfo);
     }
 
     /**
-     * 获取异步任务的执行状态信息
-     * @param taskId
-     */
+     * <h2>获取异步任务执行状态信息</h2>
+     * */
     public AsyncTaskInfo getTaskInfo(String taskId) {
         return taskContainer.get(taskId);
     }

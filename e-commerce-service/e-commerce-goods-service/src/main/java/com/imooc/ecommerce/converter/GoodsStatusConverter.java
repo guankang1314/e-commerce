@@ -5,30 +5,27 @@ import com.imooc.ecommerce.constant.GoodsStatus;
 import javax.persistence.AttributeConverter;
 
 /**
- * @author qingtian
- * @version 1.0
- * @description: GoodsStatus枚举类转换器
- * @date 2022/2/13 21:33
- */
+ * <h1>商品状态枚举属性转换器</h1>
+ * */
 public class GoodsStatusConverter implements AttributeConverter<GoodsStatus, Integer> {
 
     /**
-     * 转换成数据表中的基本类型
-     * @param goodsStatus
-     * @return
-     */
+     * <h2>转换成可以存入数据表的基本类型</h2>
+     * */
     @Override
     public Integer convertToDatabaseColumn(GoodsStatus goodsStatus) {
+        if (null == goodsStatus)
+            return null;
         return goodsStatus.getStatus();
     }
 
     /**
-     * 还原为goodsStatus
-     * @param integer
-     * @return
-     */
+     * <h2>还原数据表中的字段值到 Java 数据类型</h2>
+     * */
     @Override
-    public GoodsStatus convertToEntityAttribute(Integer integer) {
-        return GoodsStatus.of(integer);
+    public GoodsStatus convertToEntityAttribute(Integer status) {
+        if (null == status)
+            return null;
+        return GoodsStatus.of(status);
     }
 }

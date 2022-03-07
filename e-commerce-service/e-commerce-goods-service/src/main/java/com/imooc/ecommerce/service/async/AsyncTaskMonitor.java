@@ -6,72 +6,65 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.Date;
-import java.util.Objects;
 
 /**
- * @author qingtian
- * @version 1.0
- * @description: 异步任务执行监控切面
- * @date 2022/3/5 0:23
- */
+ * <h1>异步任务执行监控切面</h1>
+ * */
 @Slf4j
 @Aspect
 @Component
 public class AsyncTaskMonitor {
 
-    /**
-     * 异步任务执行管理器
-     */
-    @Autowired
-    private AsyncTaskManager manager;
+    /** 注入异步任务管理器 */
+    private final AsyncTaskManager asyncTaskManager;
 
-
-    @Pointcut("execution(* com.imooc.ecommerce.service.async.AsyncServiceImpl.*(..))")
-    public void pointCut() {}
+    public AsyncTaskMonitor(AsyncTaskManager asyncTaskManager) {
+        this.asyncTaskManager = asyncTaskManager;
+    }
 
     /**
-     * 环绕切面可以在方法执行前和执行后做额外操作
-     * @param proceedingJoinPoint
-     * @return
-     */
-    @Around("pointCut()")
+     * <h2>异步任务执行的环绕切面</h2>
+     * 环绕切面让我们可以在方法执行之前和执行之后做一些 "额外" 的操作
+     * */
+    @Around("execution(* com.imooc.ecommerce.service.async.AsyncServiceImpl.*(..))")
     public Object taskHandle(ProceedingJoinPoint proceedingJoinPoint) {
 
-        //获取 taskId, 调用异步任务的第二个参数
+        // 获取 taskId, 调用异步任务传入的第二个参数
         String taskId = proceedingJoinPoint.getArgs()[1].toString();
 
-        //获取任务信息，在提交任务的时候就放入容器中
-        AsyncTaskInfo taskInfo = manager.getTaskInfo(taskId);
-        log.info("AsyncTaskMonitor is monitoring async task : [{}]",taskId);
+        // 获取任务信息, 在提交任务的时候就已经放入到容器中了
+        AsyncTaskInfo taskInfo = asyncTaskManager.getTaskInfo(taskId);
+        log.info("AsyncTaskMonitor is monitoring async task: [{}]", taskId);
 
         taskInfo.setStatus(AsyncTaskStatusEnum.RUNNING);
-        manager.setTaskInfo(taskInfo);
+        asyncTaskManager.setTaskInfo(taskInfo); // 设置为运行状态, 并重新放入容器
 
         AsyncTaskStatusEnum status;
         Object result;
+
         try {
+            // 执行异步任务
             result = proceedingJoinPoint.proceed();
-            //如果异步任务执行成功了
             status = AsyncTaskStatusEnum.SUCCESS;
-        }catch (Throwable ex) {
-            //如果异步任务执行失败了
+        } catch (Throwable ex) {
+            // 异步任务出现了异常
             result = null;
             status = AsyncTaskStatusEnum.FAILED;
-            log.error("AsyncTaskMonitor: async task [{}] is failed, Error Info : [{}]",
-                    taskId,ex.getMessage(),ex);
+            log.error("AsyncTaskMonitor: async task [{}] is failed, Error Info: [{}]",
+                    taskId, ex.getMessage(), ex);
         }
 
-        //设置异步任务其他的信息，放入容器中
+        // 设置异步任务其他的信息, 再次重新放入到容器中
         taskInfo.setEndTime(new Date());
         taskInfo.setStatus(status);
-        taskInfo.setTotalTime(String.valueOf(taskInfo.getEndTime().getTime() - taskInfo.getStartTime().getTime()));
-        manager.setTaskInfo(taskInfo);
+        taskInfo.setTotalTime(String.valueOf(
+                taskInfo.getEndTime().getTime() - taskInfo.getStartTime().getTime()
+        ));
+        asyncTaskManager.setTaskInfo(taskInfo);
+
         return result;
     }
 }

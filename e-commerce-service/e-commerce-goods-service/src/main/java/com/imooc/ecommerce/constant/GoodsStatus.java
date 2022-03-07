@@ -1,39 +1,41 @@
 package com.imooc.ecommerce.constant;
 
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
- * @author qingtian
- * @version 1.0
- * @description: 商品状态枚举类
- * @date 2022/2/13 21:23
- */
+ * <h1>商品状态枚举类</h1>
+ * */
 @Getter
 @AllArgsConstructor
 public enum GoodsStatus {
 
-    ONLINE(101,"上线"),
-    OFFLINE(102,"下线"),
-    STOCK_OUT(103,"缺货"),
+    ONLINE(101, "上线"),
+    OFFLINE(102, "下线"),
+    STOCK_OUT(103, "缺货"),
     ;
 
+    /** 状态码 */
     private final Integer status;
 
+    /** 状态描述 */
     private final String description;
 
     /**
-     * 将枚举类转换成实体对象
-     * @param status
-     * @return
-     */
-    public static GoodsStatus of(@NotNull Integer status) {
-        return Stream.of(values()).filter(bean -> bean.equals(status))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(status + "not exists"));
-    }
+     * <h2>根据 code 获取到 GoodsStatus</h2>
+     * */
+    public static GoodsStatus of(Integer status) {
 
+        Objects.requireNonNull(status);
+
+        return Stream.of(values())
+                .filter(bean -> bean.status.equals(status))
+                .findAny()
+                .orElseThrow(
+                        () -> new IllegalArgumentException(status + " not exists")
+                );
+    }
 }
