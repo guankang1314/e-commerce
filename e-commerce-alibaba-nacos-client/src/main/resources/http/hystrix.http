@@ -1,0 +1,7 @@
+GET http://127.0.0.1:8001/ecommerce-nacos-client/hystrix/simple-hystrix-command?serviceId=e-commerce-nacos-client
+Content-Type: application/json
+
+###
+GET http://127.0.0.1:8001/ecommerce-nacos-client/hystrix/hystrix-command-annotation?serviceId=e-commerce-nacos-client
+Content-Type: application/json
+

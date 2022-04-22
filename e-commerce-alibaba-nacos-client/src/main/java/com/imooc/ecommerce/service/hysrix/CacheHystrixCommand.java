@@ -1,0 +1,66 @@
+package com.imooc.ecommerce.service.hysrix;
+
+import com.imooc.ecommerce.service.NacosClientService;
+import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.ServiceInstance;
+
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * @author qingtian
+ * @version 1.0
+ * @description: 带有缓存功能的 Hystrix
+ * @date 2022/4/21 23:50
+ */
+@Slf4j
+public class CacheHystrixCommand extends HystrixCommand<List<ServiceInstance>> {
+
+    /**
+     * 需要保护的服务
+     */
+    private final NacosClientService nacosClientService;
+
+    /**
+     * 方法需要的参数
+     */
+    private final String serviceId;
+
+    private static final HystrixCommandKey CACHED_KEY = HystrixCommandKey.Factory.asKey("CacheHystrixCommand");
+
+    public CacheHystrixCommand(NacosClientService nacosClientService, String serviceId) {
+        super(
+                HystrixCommand.Setter
+                        .withGroupKey(HystrixCommandGroupKey
+                                .Factory.asKey("CacheHystrixCommandGroup"))
+                        .andCommandKey(CACHED_KEY)
+        );
+        this.nacosClientService = nacosClientService;
+        this.serviceId = serviceId;
+    }
+
+    @Override
+    protected List<ServiceInstance> run() throws Exception {
+        log.info("CacheHystrixCommand In Hystrix Command to get service instance:" +
+                "[{}], [{}]", this.serviceId, Thread.currentThread().getName());
+        return this.nacosClientService.getNacosClientInfo(this.serviceId);
+    }
+
+
+    /**
+     * 在一次请求上下文中 缓存是 k:v 形式的，定义命中缓存的key
+     * @return
+     */
+    @Override
+    protected String getCacheKey() {
+        return serviceId;
+    }
+
+    @Override
+    protected List<ServiceInstance> getFallback() {
+        return Collections.emptyList();
+    }
+}

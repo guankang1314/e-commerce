@@ -1,6 +1,7 @@
 package com.imooc.ecommerce.controller;
 
 import com.imooc.ecommerce.service.communucation.AuthorityFeignClient;
+import com.imooc.ecommerce.service.communucation.UseFeignApi;
 import com.imooc.ecommerce.service.communucation.UseRestTemplateService;
 import com.imooc.ecommerce.service.communucation.UseRibbonService;
 import com.imooc.ecommerce.vo.JwtToken;
@@ -32,6 +33,9 @@ public class CommunicationController {
     @Autowired
     private AuthorityFeignClient authorityFeignClient;
 
+    @Autowired
+    private UseFeignApi useFeignApi;
+
     @PostMapping("/rest-template")
     public JwtToken getTokenFromAuthorityService(@RequestBody UsernameAndPassword usernameAndPassword) {
             return useRestTemplateService.getTokenFromAuthorityService(usernameAndPassword);
@@ -50,5 +54,10 @@ public class CommunicationController {
     @PostMapping("/token-by-feign")
     public JwtToken getTokenByFeign(@RequestBody UsernameAndPassword usernameAndPassword) {
         return authorityFeignClient.getTokenByFeign(usernameAndPassword);
+    }
+
+    @PostMapping("/thinking-in-feign")
+    public JwtToken thinkingInFeign(@RequestBody UsernameAndPassword usernameAndPassword) {
+        return useFeignApi.thinkingInFeign(usernameAndPassword);
     }
 }
