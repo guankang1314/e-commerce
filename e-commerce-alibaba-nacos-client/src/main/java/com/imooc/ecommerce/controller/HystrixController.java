@@ -2,9 +2,11 @@ package com.imooc.ecommerce.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.imooc.ecommerce.service.NacosClientService;
+import com.imooc.ecommerce.service.hysrix.CacheHystrixCommand;
 import com.imooc.ecommerce.service.hysrix.NacosClientHystrixCommand;
 import com.imooc.ecommerce.service.hysrix.NacosClientHystrixObservableCommand;
 import com.imooc.ecommerce.service.hysrix.UseHystrixCommandAnnotation;
+import com.imooc.ecommerce.service.hysrix.request_merge.NacosClientCollapseCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
@@ -107,5 +109,54 @@ public class HystrixController {
         });
         log.info("observable command result is : [{}], [{}]", JSON.toJSONString(result), Thread.currentThread().getName());
         return result.get(0);
+    }
+
+    @GetMapping("/cache-hystrix-command")
+    public void cacheHystrixCommand(@RequestParam String serviceId) {
+        //使用缓存 command ，发起两次请求
+        CacheHystrixCommand command1 = new CacheHystrixCommand(nacosClientService, serviceId);
+        CacheHystrixCommand command2 = new CacheHystrixCommand(nacosClientService, serviceId);
+
+        List<ServiceInstance> result01 = command1.execute();
+        List<ServiceInstance> result02 = command2.execute();
+        log.info("result01, result02 : [{}], [{}]",JSON.toJSONString(result01),JSON.toJSONString(result02));
+
+        //清除缓存
+        CacheHystrixCommand command3 = new CacheHystrixCommand(nacosClientService, serviceId);
+        CacheHystrixCommand command4 = new CacheHystrixCommand(nacosClientService, serviceId);
+
+        List<ServiceInstance> result03 = command3.execute();
+        List<ServiceInstance> result04 = command4.execute();
+        log.info("result03, result04 : [{}], [{}]",JSON.toJSONString(result03),JSON.toJSONString(result04));
+    }
+
+    /**
+     * 编程方式实现请求合并
+     * @throws Exception
+     */
+    @GetMapping("/request-merge")
+    public void requestMerge() throws Exception {
+        NacosClientCollapseCommand collapseCommand01 = new NacosClientCollapseCommand(
+                nacosClientService, "e-commerce-nacos-client1");
+        NacosClientCollapseCommand collapseCommand02 = new NacosClientCollapseCommand(
+                nacosClientService, "e-commerce-nacos-client2");
+        NacosClientCollapseCommand collapseCommand03 = new NacosClientCollapseCommand(
+                nacosClientService, "e-commerce-nacos-client3");
+
+        Future<List<ServiceInstance>> future01 = collapseCommand01.queue();
+        Future<List<ServiceInstance>> future02 = collapseCommand02.queue();
+        Future<List<ServiceInstance>> future03 = collapseCommand03.queue();
+
+        future01.get();
+        future02.get();
+        future03.get();
+
+        Thread.sleep(2000);
+
+        //过了合并请求的时间
+        NacosClientCollapseCommand collapseCommand04 = new NacosClientCollapseCommand(
+                nacosClientService, "e-commerce-nacos-client4");
+        Future<List<ServiceInstance>> future04 = collapseCommand04.queue();
+        future04.get();
     }
 }

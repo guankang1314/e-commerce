@@ -4,6 +4,8 @@ import com.imooc.ecommerce.service.NacosClientService;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
+import com.netflix.hystrix.HystrixRequestCache;
+import com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategyDefault;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.ServiceInstance;
 
@@ -62,5 +64,18 @@ public class CacheHystrixCommand extends HystrixCommand<List<ServiceInstance>> {
     @Override
     protected List<ServiceInstance> getFallback() {
         return Collections.emptyList();
+    }
+
+    /**
+     * 根据缓存的 key 清理在一次 hystrix 请求上下文中的缓存
+     * @param serviceId
+     */
+    private static void flushRequestCache(String serviceId) {
+        //需要传递 commandKey
+        HystrixRequestCache.getInstance(
+                CACHED_KEY,
+                HystrixConcurrencyStrategyDefault.getInstance()
+        ).clear(serviceId);
+        log.info("flush request cache in hystrix command : [{}], [{}]",serviceId, Thread.currentThread().getName());
     }
 }
