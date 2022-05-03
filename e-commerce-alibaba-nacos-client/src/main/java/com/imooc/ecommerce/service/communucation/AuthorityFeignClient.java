@@ -1,5 +1,6 @@
 package com.imooc.ecommerce.service.communucation;
 
+import com.imooc.ecommerce.service.communucation.hystrix.AuthorityFeignClientFallbackFactory;
 import com.imooc.ecommerce.vo.JwtToken;
 import com.imooc.ecommerce.vo.UsernameAndPassword;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -13,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @description: TODO
  * @date 2022/3/17 22:48
  */
-@FeignClient(contextId = "AuthorityFeignClient", value = "e-commerce-authority-center")
+@FeignClient(contextId = "AuthorityFeignClient", value = "e-commerce-authority-center",
+//        fallback = AuthorityFeignClientFallback.class
+        fallbackFactory = AuthorityFeignClientFallbackFactory.class
+)
 public interface AuthorityFeignClient {
 
     @RequestMapping(value = "/ecommerce-authority-center/authority/token",
