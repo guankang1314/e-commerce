@@ -26,7 +26,7 @@ spring:
       # SpringCloud Stream + RocketMQ
       #      rocketmq:
       #        binder:
-      #          name-server: 127.0.0.1:9876
+      #          name-server: 192.168.0.103:9876
       # 开启 stream 分区支持
       instanceCount: 1  # 消费者的总数
       instanceIndex: 0  # 当前消费者的索引
@@ -37,27 +37,27 @@ spring:
           content-type: text/plain    # 消息发送的格式, 接收端不用指定格式, 但是发送端要
           # 消息分区
           producer:
-            # partitionKeyExpression: payload.author  # 分区关键字, payload 指的是发送的对象, author 是对象中的属性
+#            partitionKeyExpression: payload.author  # 分区关键字, payload 指的是发送的对象, author 是对象中的属性
             partitionCount: 1   # 分区大小
             # 使用自定义的分区策略, 注释掉 partitionKeyExpression
-            partitionKeyExtractorName: qinyiPartitionKeyExtractorStrategy
-            partitionSelectorName: qinyiPartitionSelectorStrategy
+            partitionKeyExtractorName: guankPartitionKeyExtractorStrategy
+            partitionSelectorName: guankPartitionSelectorStrategy
         # 默认接收方
         input:      # 这里用 Stream 给我们提供的默认 input 信道
           destination: ecommerce-stream-client-default
-          group: e-commerce-qinyi-default
+          group: e-commerce-guank-default
           # 消费者开启分区支持
           consumer:
             partitioned: true
 
         # Qinyi 发送方
-        qinyiOutput:
-          destination: ecommerce-stream-client-qinyi
+        guankOutput:
+          destination: ecommerce-stream-client-guank
           content-type: text/plain
         # Qinyi 接收方
-        qinyiInput:
-          destination: ecommerce-stream-client-qinyi
-          group: e-commerce-qinyi-qinyi
+        guankInput:
+          destination: ecommerce-stream-client-guank
+          group: e-commerce-guank-guank
 
   # spring-kafka 的配置
   kafka:
