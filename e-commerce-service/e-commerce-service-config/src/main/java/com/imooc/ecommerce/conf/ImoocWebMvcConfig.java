@@ -1,5 +1,6 @@
 package com.imooc.ecommerce.conf;
 
+import com.alibaba.cloud.seata.web.SeataHandlerInterceptor;
 import com.imooc.ecommerce.filter.LoginUserInfoInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -24,8 +25,14 @@ public class ImoocWebMvcConfig extends WebMvcConfigurationSupport {
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
 
+        /**
+         * 保存登录的用户信息拦截器
+         */
         registry.addInterceptor(new LoginUserInfoInterceptor())
                 .addPathPatterns("/**").order(0);
+        // Seata 传递 xid 事务 id 给其他事务
+        // 只有这样，其他服务才会写 undo_log，才能实现回滚
+        registry.addInterceptor(new SeataHandlerInterceptor()).addPathPatterns("/**");
     }
 
     /**
