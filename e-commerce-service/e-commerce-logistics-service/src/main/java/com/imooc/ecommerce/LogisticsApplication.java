@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
- * @author qingtian
+ * @author Guank
  * @version 1.0
- * @description: 订单微服务启动类
- * @date 2022/5/18 23:18
+ * @description: 物流微服务
+ * @date 2022/6/20 23:00
  */
 @SpringBootApplication
 @EnableDiscoveryClient
@@ -21,8 +21,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @EnableCircuitBreaker
 @Import(DataSourceProxyAutoConfiguration.class)
-public class OrderApplication {
+public class LogisticsApplication {
+
     public static void main(String[] args) {
-        SpringApplication.run(OrderApplication.class,args);
+        SpringApplication.run(LogisticsApplication.class,args);
     }
 }

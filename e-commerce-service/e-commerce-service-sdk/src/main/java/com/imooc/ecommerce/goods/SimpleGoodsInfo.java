@@ -29,4 +29,8 @@ public class SimpleGoodsInfo {
 
     @ApiModelProperty(value = "商品价格，单位：分")
     private Integer price;
+
+    public SimpleGoodsInfo(Long id) {
+        this.id = id;
+    }
 }
