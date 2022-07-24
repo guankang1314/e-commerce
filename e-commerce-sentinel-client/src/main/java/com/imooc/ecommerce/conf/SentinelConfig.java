@@ -19,8 +19,8 @@ import org.springframework.web.client.RestTemplate;
 public class SentinelConfig {
 
     @Bean
-    @SentinelRestTemplate(fallback = "handleFallback", fallbackClass = RestTemplateExceptionUtil.class,
-    blockHandler = "handleBlock", blockHandlerClass = RestTemplateExceptionUtil.class)
+//    @SentinelRestTemplate(fallback = "handleFallback", fallbackClass = RestTemplateExceptionUtil.class,
+//    blockHandler = "handleBlock", blockHandlerClass = RestTemplateExceptionUtil.class)
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
