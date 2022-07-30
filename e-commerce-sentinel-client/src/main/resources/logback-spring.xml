@@ -9,6 +9,13 @@
             <charset>UTF-8</charset>
         </encoder>
     </appender>
+
+    <springProperty scope="context" name="springAppName" source="spring.application.name" />
+    <!-- 彩色日志 -->
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
     <!-- 彩色日志 -->
     <!-- 配置格式变量：CONSOLE_LOG_PATTERN 彩色日志格式 -->
     <!-- magenta:洋红 -->
@@ -109,6 +116,7 @@
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="logstash" />
+        <appender-ref ref="CONSOLE" />
     </root>
 
 </configuration>

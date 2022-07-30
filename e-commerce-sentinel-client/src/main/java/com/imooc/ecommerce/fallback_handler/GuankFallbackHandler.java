@@ -26,6 +26,6 @@ public class GuankFallbackHandler {
 
     public static JwtToken ignoreExceptionFallback(Integer code) {
         log.error("ignore exception input code is : [{}] has trigger exception",code);
-        return new JwtToken("imooc-guan");
+        return new JwtToken("imooc-guan-fallback");
     }
 }

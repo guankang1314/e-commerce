@@ -35,7 +35,7 @@ public class SentinelFallbackController {
 
     @PostMapping("/get-token")
     @SentinelResource(value = "getJwtTokenFromAuthorityCenter",
-            blockHandler = "getTokenFromAuthorityServiceFallback", blockHandlerClass = GuankFallbackHandler.class)
+            fallback = "getTokenFromAuthorityServiceFallback", fallbackClass = GuankFallbackHandler.class)
     public JwtToken getJwtTokenFromAuthorityCenter(@RequestBody UsernameAndPassword usernameAndPassword) {
         String requestUrl = "http://127.0.0.1:7000/ecommerce-authority-center/authority/token";
         log.info("RestTemplate from authority center url and body : [{}] , [{}]"
@@ -47,6 +47,16 @@ public class SentinelFallbackController {
                 JwtToken.class);
     }
 
+    /**
+     * 让 Sentinel 忽略一些异常
+     * @param code
+     * @return
+     */
+    @GetMapping("/ignore-exception")
+    @SentinelResource(value = "ignoreException",
+                    fallback = "ignoreExceptionFallback",
+                    fallbackClass = GuankFallbackHandler.class,
+                    exceptionsToIgnore = {NullPointerException.class})
     public JwtToken ignoreException(@RequestParam Integer code) {
         if (code % 2 == 0) {
             throw new NullPointerException("you input code is : " + code);
