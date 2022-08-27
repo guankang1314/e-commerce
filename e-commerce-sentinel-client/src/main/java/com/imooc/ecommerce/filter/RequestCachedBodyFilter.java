@@ -4,10 +4,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.PathMatcher;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Guank
@@ -20,9 +27,16 @@ import java.io.IOException;
 @ServletComponentScan
 public class RequestCachedBodyFilter implements Filter, Ordered {
 
+    private static final List<String> WHITE_LIST = new ArrayList<>();
+
+    //设置 filter 白名单
+    static {
+
+    }
+
     @Override
     public int getOrder() {
-        return HIGHEST_PRECEDENCE + 1;
+        return HIGHEST_PRECEDENCE;
     }
 
     @Override
@@ -34,7 +48,16 @@ public class RequestCachedBodyFilter implements Filter, Ordered {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         ServletRequest request = null;
         if (servletRequest instanceof HttpServletRequest) {
-            request = new RequestWrapper((HttpServletRequest) servletRequest);
+            HttpServletRequest req = (HttpServletRequest) servletRequest;
+            String contentType = req.getContentType();
+            String method = "multipart/form-data";
+            if (isFiltered(req.getServletPath())) {
+                if (null != contentType && contentType.contains(method)) {
+                    // 将转化后的 request 放入过滤链中
+                    req = new StandardServletMultipartResolver().resolveMultipart(req);
+                }
+                request = new RequestWrapper(req);
+            }
         }
         if (request != null) {
             filterChain.doFilter(request, servletResponse);
@@ -47,4 +70,18 @@ public class RequestCachedBodyFilter implements Filter, Ordered {
     public void destroy() {
         Filter.super.destroy();
     }
+
+    private Boolean isFiltered(String path) {
+        PathMatcher pathMatcher = new AntPathMatcher();
+        if (CollectionUtils.isEmpty(WHITE_LIST)) {
+            return true;
+        }
+        for (String whitePath : WHITE_LIST) {
+            if (pathMatcher.match(whitePath,path)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

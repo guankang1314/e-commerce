@@ -4,9 +4,9 @@ import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.imooc.ecommerce.block_handler.GuankBlockHandler;
 import com.imooc.ecommerce.vo.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.bouncycastle.pqc.crypto.newhope.NHOtherInfoGenerator;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Guank
@@ -39,5 +39,10 @@ public class RateLimitController {
     public CommonResponse<String> byUrl() {
         log.info("coming in rate limit controller by url");
         return new CommonResponse<>(0,"by url");
+    }
+
+    @PostMapping("/upload")
+    public CommonResponse<String> upload(@RequestParam("id") String id, @RequestParam("file")MultipartFile file) {
+        return new CommonResponse<>(0,"success");
     }
 }
