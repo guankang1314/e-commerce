@@ -16,6 +16,8 @@ spring:
         metadata:
           management:
             context-path: ${server.servlet.context-path}/actuator
+          user.name: admin
+          user.password: admin
   kafka:
     bootstrap-servers: 192.168.0.103:9092
     producer:

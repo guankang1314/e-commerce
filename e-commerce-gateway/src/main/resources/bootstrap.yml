@@ -15,6 +15,8 @@ spring:
         metadata:
           management:
             context-path: ${server.servlet.context-path}/actuator
+          user.name: admin
+          user.password: admin
     sentinel:
       eager: true
       transport:
